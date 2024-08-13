@@ -20,34 +20,49 @@ public class HeadManager : MonoBehaviour
         transform.Translate(transform.up * Time.deltaTime * speed, Space.World);
     }
 
-    // When balloon collides with the head of the snake
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!collision.CompareTag("Bounds"))
+        if (collision.CompareTag("Balloons"))
         {
-            collision.transform.parent = transform.parent;
-            
-            collision.tag = "Last";
-            parts[parts.Count - 2].tag = "Middle";
-
-            collision.transform.position = pivot.position;
-            pivot.GetComponent<DistanceJoint2D>().connectedBody = collision.GetComponent<Rigidbody2D>();
-
-            TailManager tm = collision.gameObject.AddComponent<TailManager>();
-            DistanceJoint2D joint = collision.gameObject.AddComponent<DistanceJoint2D>();
-
-            tm.head = parts[parts.Count - 2];
-
-            joint.connectedBody = tm.head.GetComponent<Rigidbody2D>();
-            joint.autoConfigureDistance = false;
-            joint.distance = distanceOffset;
-
-            // Swap the pivot to the last element
-            parts.RemoveAt(parts.Count - 1);
-            parts.Add(collision.gameObject);
-            parts.Add(pivot.gameObject);
+            AddBalloon(collision.gameObject);
+        }
+        else if(collision.CompareTag("Middle") || collision.CompareTag("Last"))
+        {
+            DestroyLastBalloon();
         }
     }
 
+    void DestroyLastBalloon()
+    {
+        GameObject balloon = parts[parts.Count - 2];
+        Destroy(balloon);
+        parts.RemoveAt(parts.Count - 2);
+        parts[parts.Count - 2].tag = "Last";
+    }
+
+    void AddBalloon(GameObject balloon)
+    {
+        balloon.transform.parent = transform.parent;
+
+        balloon.tag = "Last";
+        parts[parts.Count - 2].tag = "Middle";
+
+        balloon.transform.position = pivot.position;
+        pivot.GetComponent<DistanceJoint2D>().connectedBody = balloon.GetComponent<Rigidbody2D>();
+
+        TailManager tm = balloon.gameObject.AddComponent<TailManager>();
+        DistanceJoint2D joint = balloon.gameObject.AddComponent<DistanceJoint2D>();
+
+        tm.head = parts[parts.Count - 2];
+
+        joint.connectedBody = tm.head.GetComponent<Rigidbody2D>();
+        joint.autoConfigureDistance = false;
+        joint.distance = distanceOffset;
+
+        // Swap the pivot to the last element
+        parts.RemoveAt(parts.Count - 1);
+        parts.Add(balloon.gameObject);
+        parts.Add(pivot.gameObject);
+    }
 
 }

@@ -7,6 +7,7 @@ TagManager:
   - Last
   - Bounds
   - Middle
+  - Balloons
   layers:
   - Default
   - TransparentFX
