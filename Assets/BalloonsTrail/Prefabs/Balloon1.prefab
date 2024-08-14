@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 129281874023892513}
   - component: {fileID: 1249940655818599827}
   - component: {fileID: 3970880849174731163}
+  - component: {fileID: 2568706257933470829}
   m_Layer: 0
   m_Name: Balloon1
   m_TagString: Balloons
@@ -223,3 +224,15 @@ PolygonCollider2D:
       - {x: 0.066, y: -0.41400003}
       - {x: 0.080000006, y: -0.39400002}
   m_UseDelaunayMesh: 0
+--- !u!114 &2568706257933470829
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6045006661801781122}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dfed041946eb5654e9c3a38ac9997e93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

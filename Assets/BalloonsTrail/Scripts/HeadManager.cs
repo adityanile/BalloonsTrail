@@ -1,6 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class HeadManager : MonoBehaviour
 {
@@ -20,31 +20,32 @@ public class HeadManager : MonoBehaviour
         transform.Translate(transform.up * Time.deltaTime * speed, Space.World);
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    public void DestroyLastBalloon()
     {
-        if (collision.CompareTag("Balloons"))
+        // Destroy the snake when no balloon and snake hit a dart
+        if (parts.Count == 2)
         {
-            AddBalloon(collision.gameObject);
+            Destroy(transform.parent.gameObject);
+            SceneManager.LoadScene(0);
+            return;
         }
-        else if(collision.CompareTag("Middle") || collision.CompareTag("Last"))
-        {
-            DestroyLastBalloon();
-        }
-    }
 
-    void DestroyLastBalloon()
-    {
         GameObject balloon = parts[parts.Count - 2];
+        pivot.GetComponent<DistanceJoint2D>().connectedBody = parts[parts.Count - 3].GetComponent<Rigidbody2D>();
         Destroy(balloon);
         parts.RemoveAt(parts.Count - 2);
-        parts[parts.Count - 2].tag = "Last";
+
+        if (parts.Count > 2)
+            parts[parts.Count - 2].tag = "Last";
     }
 
-    void AddBalloon(GameObject balloon)
+    public void AddBalloon(GameObject balloon)
     {
         balloon.transform.parent = transform.parent;
 
         balloon.tag = "Last";
+        
+        if(parts.Count > 2)
         parts[parts.Count - 2].tag = "Middle";
 
         balloon.transform.position = pivot.position;

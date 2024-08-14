@@ -8,10 +8,8 @@ public class BalloonSpawner : MonoBehaviour
 
     public Transform freeBalloons;
 
-    [SerializeField]
-    private float upperLimit = 2.1f;
-    [SerializeField]
-    private float lowerLimit = 5f;
+    private static float upperLimit = 2.1f;
+    private static float lowerLimit = 5f;
 
     [SerializeField]
     private float startAfter = 1f;
@@ -32,7 +30,7 @@ public class BalloonSpawner : MonoBehaviour
         Instantiate(Spawns[spawnIndex], spawnPos, Quaternion.identity, freeBalloons);
     }
 
-    private Vector3 GetSpawnPos()
+    public static Vector3 GetSpawnPos()
     {
         float xPos = Random.Range(-lowerLimit,lowerLimit);
         float yPos = Random.Range(-upperLimit,upperLimit);

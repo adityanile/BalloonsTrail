@@ -9,16 +9,19 @@ public class EdgeManager : MonoBehaviour
     [SerializeField]
     bool vertical = true;
 
-    private GameObject currentSnake;
+    public Transform parent;
+    
+    private static GameObject lastSnake;
+    private static GameObject currentSnake;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
         {
-            currentSnake = collision.transform.parent.gameObject;
-            GameObject inst = Instantiate(currentSnake, Vector3.zero, currentSnake.transform.rotation);
+            lastSnake = collision.transform.parent.gameObject;
+            currentSnake = Instantiate(lastSnake, Vector3.zero, lastSnake.transform.rotation,parent);
 
-            HeadManager head = inst.transform.GetChild(0).GetComponent<HeadManager>();
+            HeadManager head = currentSnake.transform.GetChild(0).GetComponent<HeadManager>();
 
             foreach (var i in head.parts)
             {
@@ -34,7 +37,6 @@ public class EdgeManager : MonoBehaviour
                 i.SetActive(true);
             }
             touchManager.player = head;
-
         }
     }
 
@@ -42,7 +44,8 @@ public class EdgeManager : MonoBehaviour
     {
         if (collision.CompareTag("Last"))
         {
-            Destroy(currentSnake);
+            if(collision.transform.parent.gameObject != currentSnake)
+            Destroy(collision.transform.parent.gameObject);
         }
     }
 }
