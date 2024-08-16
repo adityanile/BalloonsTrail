@@ -6,42 +6,19 @@ public class DartManager : MonoBehaviour
     private Vector3 landingPos;
 
     [SerializeField]
-    private float offset = 0.1f;
-    [SerializeField]
     private float speed = 1.5f;
-
-    private bool reached = false;
-
-    [SerializeField]
-    private float selfDestructionTime = 20f;
 
     // Start is called before the first frame update
     void Start()
     {
         landingPos = BalloonSpawner.GetSpawnPos();
-        transform.position = (landingPos - transform.position);
-
-        StartCoroutine(SelfDestruction());
+        transform.up = (landingPos - transform.position);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!reached)
-        {
-            Vector3 dir = (landingPos - transform.position);
-            float distance = dir.magnitude;
-
-            if (distance > offset)
-            {
-                transform.Translate(transform.up * speed * Time.deltaTime, Space.World);
-                transform.up = dir.normalized;
-            }
-            else
-            {
-                reached = true;
-            }
-        }
+        transform.Translate(transform.up * speed * Time.deltaTime, Space.World);
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -58,11 +35,10 @@ public class DartManager : MonoBehaviour
             hm.DestroyLastBalloon();
             Destroy(gameObject);
         }
-    }
 
-    IEnumerator SelfDestruction()
-    {
-        yield return new WaitForSeconds(selfDestructionTime);
-        Destroy(gameObject);
+        if (collision.CompareTag("Bounds"))
+        {
+            Destroy(gameObject);
+        }
     }
 }
