@@ -37,6 +37,9 @@ public class EdgeManager : MonoBehaviour
                 i.SetActive(true);
             }
             touchManager.player = head;
+
+            // Registering new snake
+            SnakesManager.instance.AddASnake(head);
         }
     }
 
@@ -44,8 +47,13 @@ public class EdgeManager : MonoBehaviour
     {
         if (collision.CompareTag("Last"))
         {
-            if(collision.transform.parent.gameObject != currentSnake)
-            Destroy(collision.transform.parent.gameObject);
+            if (collision.transform.parent.gameObject != currentSnake)
+            {
+                HeadManager hm = collision.transform.parent.GetChild(0).GetComponent<HeadManager>();
+                SnakesManager.instance.RemoveASnake(hm);
+                Destroy(collision.transform.parent.gameObject);
+            }
+
         }
     }
 }

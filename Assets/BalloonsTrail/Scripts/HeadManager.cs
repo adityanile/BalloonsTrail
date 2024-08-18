@@ -39,6 +39,23 @@ public class HeadManager : MonoBehaviour
             parts[parts.Count - 2].tag = "Last";
     }
 
+    public void DestroyMentionedBalloon(int index)
+    {
+        GameObject balloon = parts[index];
+
+        Rigidbody2D connectTo = parts[index-1].GetComponent<Rigidbody2D>();
+        
+        // Part Later to hit body should connect to upNext of the hit body
+        DistanceJoint2D nextJoint = parts[index+1].GetComponent<DistanceJoint2D>(); 
+        TailManager tailManager = parts[index+1].GetComponent<TailManager>();
+
+        tailManager.head = connectTo.gameObject;
+        nextJoint.connectedBody = connectTo;
+
+        parts.RemoveAt(index);
+        Destroy(balloon);
+    }
+
     public void AddBalloon(GameObject balloon)
     {
         balloon.transform.parent = transform.parent;
@@ -60,10 +77,12 @@ public class HeadManager : MonoBehaviour
         joint.autoConfigureDistance = false;
         joint.distance = distanceOffset;
 
-        // Swap the pivot to the last element
+        // Swap the pivot to the last in the list
         parts.RemoveAt(parts.Count - 1);
         parts.Add(balloon.gameObject);
         parts.Add(pivot.gameObject);
-    }
 
+        // Setting sibling as last in the transform list
+        pivot.transform.SetAsLastSibling();
+    }
 }

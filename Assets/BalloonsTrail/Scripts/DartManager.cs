@@ -20,24 +20,40 @@ public class DartManager : MonoBehaviour
     {
         transform.Translate(transform.up * speed * Time.deltaTime, Space.World);
     }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Middle") || collision.CompareTag("Last"))
-        {
-            HeadManager hm = collision.transform.parent.GetChild(0).GetComponent<HeadManager>();
-            hm.DestroyLastBalloon();
-            Destroy(gameObject);
-        }
-
-        if (collision.CompareTag("Player"))
-        {
-            HeadManager hm = collision.GetComponent<HeadManager>();
-            hm.DestroyLastBalloon();
-            Destroy(gameObject);
-        }
-
         if (collision.CompareTag("Bounds"))
         {
+            Destroy(gameObject);
+            return;
+        }  
+
+        if (collision.CompareTag("Middle"))
+        {
+            // Get which balloon to destroy
+            HeadManager hm = collision.transform.parent.GetChild(0).GetComponent<HeadManager>();
+            int hitIndex = hm.parts.FindIndex(p => p.gameObject.Equals(collision.gameObject));
+
+            foreach (var head in SnakesManager.instance.allHeads)
+            {
+                if (head != null)
+                    head.DestroyMentionedBalloon(hitIndex);
+            }
+
+            // Also Destroy the dart itself
+            Destroy(gameObject);
+        }
+
+        if (collision.CompareTag("Player") || collision.CompareTag("Last"))
+        {
+            foreach(var head in SnakesManager.instance.allHeads)
+            {
+                if(head != null)
+                    head.DestroyLastBalloon();
+            }
+
+            // Also Destroy the dart itself
             Destroy(gameObject);
         }
     }
