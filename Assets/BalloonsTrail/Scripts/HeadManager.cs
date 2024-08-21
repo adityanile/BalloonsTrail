@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -15,9 +16,61 @@ public class HeadManager : MonoBehaviour
 
     public Transform pivot;
 
+    public delegate void MyDelegate();
+    public static event MyDelegate OnValueChanged;
+
+    private static Vector3 _followPos;
+
+    public static Vector3 FollowPos
+    {
+        get => _followPos;
+        set
+        {
+            _followPos = value;
+            OnValueChanged?.Invoke();
+        }
+    }
+
+    public bool reached = true;
+
+    // Subscribing the event method
+    private void OnEnable()
+    {
+        OnValueChanged += MoveSnake;
+    }
+    private void OnDisable()
+    {
+        OnValueChanged -= MoveSnake;    
+    }
+
+    // Invoke this method
+    void MoveSnake()
+    {
+        Debug.Log("Motion Activated");
+        reached = false;
+    }
+
     void Update()
     {
-        transform.Translate(transform.up * Time.deltaTime * speed, Space.World);
+        if (!reached)
+        {
+            Vector3 dir = (FollowPos - transform.position);
+            float distance = dir.magnitude;
+
+            if (distance > distanceOffset)
+            {
+                transform.Translate(dir.normalized * Time.deltaTime * speed, Space.World);
+                transform.up = dir.normalized;
+            }
+            else
+            {
+                reached = true;
+            }
+        }
+        else
+        {
+            transform.Translate(transform.up * Time.deltaTime * speed, Space.World);
+        }
     }
 
     public void DestroyLastBalloon()
