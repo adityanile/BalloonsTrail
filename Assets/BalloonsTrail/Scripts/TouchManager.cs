@@ -1,107 +1,110 @@
 using UnityEngine;
 
-public class TouchManager : MonoBehaviour
+namespace BalloonTrail
 {
-    private Vector3 fp;
-    private Vector3 lp;
-    private float dragDistance;
-
-    public HeadManager player;
-
-    public bool activate = false;
-    public Quaternion startRotation;
-    public Quaternion endRotation;
-    public float time = 0;
-
-    void Start()
+    public class TouchManager : MonoBehaviour
     {
-        dragDistance = Screen.height * 15 / 100;
-    }
+        private Vector3 fp;
+        private Vector3 lp;
+        private float dragDistance;
 
-    void Update()
-    {
-        if (Input.touchCount == 1)
+        public HeadManager player;
+
+        public bool activate = false;
+        public Quaternion startRotation;
+        public Quaternion endRotation;
+        public float time = 0;
+
+        void Start()
         {
-            Touch touch = Input.GetTouch(0); // get the touch
+            dragDistance = Screen.height * 15 / 100;
+        }
 
-            if (touch.phase == TouchPhase.Began)
+        void Update()
+        {
+            if (Input.touchCount == 1)
             {
-                fp = touch.position;
-                lp = touch.position;
-            }
-            else if (touch.phase == TouchPhase.Ended)
-            {
-                lp = touch.position;
+                Touch touch = Input.GetTouch(0); // get the touch
 
-                if (Mathf.Abs(lp.x - fp.x) > dragDistance || Mathf.Abs(lp.y - fp.y) > dragDistance)
+                if (touch.phase == TouchPhase.Began)
                 {
-                    if (Mathf.Abs(lp.x - fp.x) > Mathf.Abs(lp.y - fp.y))
+                    fp = touch.position;
+                    lp = touch.position;
+                }
+                else if (touch.phase == TouchPhase.Ended)
+                {
+                    lp = touch.position;
+
+                    if (Mathf.Abs(lp.x - fp.x) > dragDistance || Mathf.Abs(lp.y - fp.y) > dragDistance)
                     {
-                        if ((lp.x > fp.x))
+                        if (Mathf.Abs(lp.x - fp.x) > Mathf.Abs(lp.y - fp.y))
                         {
-                            //Right swipe
-                            //player.transform.rotation = Quaternion.Euler(0.0f, 0.0f, -90f);
+                            if ((lp.x > fp.x))
+                            {
+                                //Right swipe
+                                //player.transform.rotation = Quaternion.Euler(0.0f, 0.0f, -90f);
 
-                            startRotation = player.transform.rotation;
-                            endRotation = Quaternion.Euler(0, 0, -90);
+                                startRotation = player.transform.rotation;
+                                endRotation = Quaternion.Euler(0, 0, -90);
 
-                            activate = true;
+                                activate = true;
+                            }
+                            else
+                            {   //Left swipe
+                                //player.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 90f);
+
+                                startRotation = player.transform.rotation;
+                                endRotation = Quaternion.Euler(0, 0, 90);
+
+                                activate = true;
+                            }
                         }
                         else
-                        {   //Left swipe
-                            //player.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 90f);
-                            
-                            startRotation = player.transform.rotation;
-                            endRotation = Quaternion.Euler(0, 0, 90);
+                        {
+                            if (lp.y > fp.y)
+                            {
+                                //Up swipe
+                                //player.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0f);
 
-                            activate = true;
+                                startRotation = player.transform.rotation;
+                                endRotation = Quaternion.Euler(0, 0, 0);
+
+                                activate = true;
+                            }
+                            else
+                            {
+                                //Down swipe
+                                //player.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 180f);
+
+                                startRotation = player.transform.rotation;
+                                endRotation = Quaternion.Euler(0, 0, 180);
+
+                                activate = true;
+                            }
                         }
                     }
                     else
                     {
-                        if (lp.y > fp.y)
-                        {
-                            //Up swipe
-                            //player.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0f);
-
-                            startRotation = player.transform.rotation;
-                            endRotation = Quaternion.Euler(0, 0, 0);
-
-                            activate = true;
-                        }
-                        else
-                        {
-                            //Down swipe
-                            //player.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 180f);
-
-                            startRotation = player.transform.rotation;
-                            endRotation = Quaternion.Euler(0, 0, 180);
-
-                            activate = true;
-                        }
+                        Vector3 pos = Camera.main.ScreenToWorldPoint(touch.position);
+                        pos.z = 0;
+                        HeadManager.FollowPos = pos;
                     }
+                }
+            }
+
+            if (activate)
+            {
+                if (time <= 1)
+                {
+                    Quaternion interPo = Quaternion.Slerp(startRotation, endRotation, time);
+                    time += Time.fixedDeltaTime;
+                    player.gameObject.transform.rotation = interPo;
                 }
                 else
                 {
-                    Vector3 pos = Camera.main.ScreenToWorldPoint(touch.position);
-                    pos.z = 0;
-                    HeadManager.FollowPos = pos;
+                    activate = false;
+                    time = 0;
                 }
-            }
-        }
-
-        if (activate)
-        {
-            if (time <= 1)
-            {
-                Quaternion interPo = Quaternion.Slerp(startRotation, endRotation, time);
-                time += Time.fixedDeltaTime;
-                player.gameObject.transform.rotation = interPo;
-            }
-            else
-            {
-                activate = false;
-                time = 0;
             }
         }
     }

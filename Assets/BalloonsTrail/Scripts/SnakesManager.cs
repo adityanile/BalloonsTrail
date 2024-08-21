@@ -2,35 +2,38 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SnakesManager : MonoBehaviour
+namespace BalloonTrail
 {
-    [HideInInspector]   
-    public List<HeadManager> allHeads = new();
-
-    [SerializeField]
-    private HeadManager startingHead;
-
-    public static SnakesManager instance;
-
-    private void Start()
+    public class SnakesManager : MonoBehaviour
     {
-        if (!instance)
+        [HideInInspector]
+        public List<HeadManager> allHeads = new();
+
+        [SerializeField]
+        private HeadManager startingHead;
+
+        public static SnakesManager instance;
+
+        private void Start()
         {
-            instance = this;
+            if (!instance)
+            {
+                instance = this;
 
-            // Initial snake
-            AddASnake(startingHead);
-            return;
+                // Initial snake
+                AddASnake(startingHead);
+                return;
+            }
+            Destroy(gameObject);
         }
-        Destroy(gameObject);
-    }
 
-    public void AddASnake(HeadManager headManager)
-    {
-        allHeads.Add(headManager);
-    }
-    public void RemoveASnake(HeadManager head)
-    {
-        allHeads.Remove(head);
+        public void AddASnake(HeadManager headManager)
+        {
+            allHeads.Add(headManager);
+        }
+        public void RemoveASnake(HeadManager head)
+        {
+            allHeads.Remove(head);
+        }
     }
 }
