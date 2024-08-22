@@ -1,23 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace BalloonPeggle
 {
     public class TouchManager : MonoBehaviour
     {
+        [SerializeField]
         private Transform blower;
 
-        // Start is called before the first frame update
-        void Start()
-        {
-            blower = BlowerManager.instance.gameObject.transform;
-        }
 
         // Update is called once per frame
         void Update()
         {
-            if(Input.touchCount > 0)
+            if (Input.touchCount > 0)
             {
                 Touch touch = Input.GetTouch(0);
                 Vector3 pos = touch.position;
@@ -51,7 +45,7 @@ namespace BalloonPeggle
                 }
 
             }
-            
+
         }
     }
 }

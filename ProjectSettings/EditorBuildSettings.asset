@@ -5,7 +5,10 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/BalloonsTrail/BalloonTrail.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/BalloonPeggle/BalloonPeggleScene2.unity
+    guid: d4f96d6c168f0e144832772dcb555820
   m_configObjects: {}

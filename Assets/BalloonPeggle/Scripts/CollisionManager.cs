@@ -1,11 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class CollisionManager : MonoBehaviour
+namespace BalloonPeggle
 {
-    private void OnParticleCollision(GameObject other)
+    public class CollisionManager : MonoBehaviour
     {
-        Destroy(other);
+        private void OnParticleCollision(GameObject other)
+        {
+            Destroy(other);
+        }
     }
 }

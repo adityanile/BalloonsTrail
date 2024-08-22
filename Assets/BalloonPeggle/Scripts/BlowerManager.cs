@@ -1,62 +1,65 @@
 using UnityEngine;
 
-public class BlowerManager : MonoBehaviour
+namespace BalloonPeggle
 {
-    public static BlowerManager instance;
-    public ParticleSystem sprayer;
-
-    // Smooth rotation
-    private Quaternion intitialRot;
-    float time = 0;
-    private bool revertBack = false;
-
-    [SerializeField]
-    private float waitTime = 1f;
-
-    // Start is called before the first frame update
-    void Start()
+    public class BlowerManager : MonoBehaviour
     {
-        if (!instance)
+        public static BlowerManager instance;
+        public ParticleSystem sprayer;
+
+        // Smooth rotation
+        private Quaternion intitialRot;
+        float time = 0;
+        private bool revertBack = false;
+
+        [SerializeField]
+        private float waitTime = 1f;
+
+        // Start is called before the first frame update
+        void Awake()
         {
-            instance = this;
-            intitialRot = transform.rotation;
-            return;
+            if (!instance)
+            {
+                instance = this;
+                intitialRot = transform.rotation;
+                return;
+            }
+            Destroy(instance);
         }
-        Destroy(instance);
-    }
 
-    private void Update()
-    {
-        if (revertBack)
+        private void Update()
         {
-            SmoothSlerp();
+            if (revertBack)
+            {
+                SmoothSlerp();
+            }
         }
-    }
 
-    public void SprayWater()
-    {
-        sprayer.Play();
-
-        // Ensure Smooth rotation back to original Angle
-        Invoke("StartSlerp", waitTime);
-    }
-
-    private void StartSlerp()
-    {
-        revertBack = true;
-    }
-    private void SmoothSlerp()
-    {
-        if (time <= 1)
+        public void SprayWater()
         {
-            Quaternion currRot = transform.rotation;
-            transform.rotation = Quaternion.Slerp(currRot, intitialRot, time);
-            time += Time.fixedDeltaTime;
+            sprayer.Play();
+
+            // Ensure Smooth rotation back to original Angle
+            Invoke("StartSlerp", waitTime);
         }
-        else
+
+        private void StartSlerp()
         {
-            revertBack = false;
-            time = 0;
+            revertBack = true;
+        }
+        private void SmoothSlerp()
+        {
+            if (time <= 1)
+            {
+                Quaternion currRot = transform.rotation;
+                transform.rotation = Quaternion.Slerp(currRot, intitialRot, time);
+                time += Time.fixedDeltaTime;
+            }
+            else
+            {
+                revertBack = false;
+                time = 0;
+            }
         }
     }
 }
