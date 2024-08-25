@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace BalloonPeggle
+namespace BalloonZuma
 {
     public class TouchManager : MonoBehaviour
     {
